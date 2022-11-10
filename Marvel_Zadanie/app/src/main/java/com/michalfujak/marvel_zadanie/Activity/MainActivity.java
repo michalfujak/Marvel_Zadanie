@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     IMarvelAPI serviceMarvelAPI;
     //RX Java
-    // CompositeDisposable compositeDisposable = new CompositeDisposable();
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +43,24 @@ public class MainActivity extends AppCompatActivity {
 
         // LoadList
 
-        /*
-        Call<List<Characters>> call = serviceMarvelAPI.getCharactersMarvel(objAuth.timeStamp, objAuth.PUBLIC_KEY, objAuth.hashData());
+        compositeDisposable.add(serviceMarvelAPI.getCharactersMarvel(objAuth.timeStamp, objAuth.PUBLIC_KEY, objAuth.hashData())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Characters>>() {
+                    @Override
+                    public void accept(List<Characters> characters) throws Exception {
 
-        call.enqueue(new Callback<List<Characters>>() {
-            @Override
-            public void onResponse(Call<List<Characters>> call, Response<List<Characters>> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Characters>> call, Throwable t) {
-
-            }
-        });
-        */
+                        // viewAdapterTest(characters);
+                    }
+                })
+        );
 
 
+
+    }
+
+    private void viewAdapterTest(List<Characters> characters)
+    {
+        Log.d("Out: ", characters.toString());
     }
 }
